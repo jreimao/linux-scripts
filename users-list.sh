@@ -2,16 +2,19 @@
 
 # author: joao reimao
 #
-# description: 
+# description:script for searching and listing users
 #
-# use: ./user-list.sh --help
+# use: ./users-list.sh --help
+#      ./users-list.sh
 #
-
-clear
 
 help () {
-	echo "$(pwd)/"
+	echo
+	echo "script for searching and listing users"
+	echo
 	echo "$0 --help"
+	echo "$0"
+	echo
 }
 
 # creation logs 
@@ -22,26 +25,28 @@ logs () {
 		touch ./logs/logs.out
 		sleep 2
 		chmod +x ./logs/logs.out
+		sleep 2
 	elif [ ! -f ./logs/logs.out ]
 	then
 		touch ./logs/logs.out
 		sleep 2
 		chmod +x ./logs/logs.out
+		sleep 2
 	fi
-	sleep 2
 	echo $1 >> ./logs/logs.out
 }
 
 # query and list users
-list_users () {
-	#
+users-list () {
+	# range of users ids
 	MIN_UID=$(grep "^UID_MIN" /etc/login.defs | tr -s "\t" | cut -f2)
 	MAX_UID=$(grep "^UID_MAX" /etc/login.defs | tr -s "\t" | cut -f2)
 
-	# 
+	# ifs - input field separators
 	OLDIFS=$IFS
 	IFS=$'\n'
 
+	echo
 	echo "-----------"
 	echo "Users list:"
 	echo "-----------"
@@ -49,7 +54,7 @@ list_users () {
 	echo -e "User\t\tUID\t\tHome Directory\t\tName or Description"
 	echo -e "---------------------------------------------------------------------------"
 	
-	# 
+	# loop for searching, validating e listing users
 	for i in $(cat /etc/passwd)
 	do
 		USERID=$(echo $i | cut -d":" -f3)
@@ -65,18 +70,18 @@ list_users () {
 		fi	
 	done
 
-	# 
+	# reset of initial settings
 	IFS=$OLDIFS
 }
 
+# start of the script
 case $1 in
 	"--help")
 		help
 		;;
 	*)
+		
+		users-list
+		logs "$(date): new users query"
 		;;
 esac
-
-
-list_users
-logs "$(date): new users query"
