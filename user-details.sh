@@ -10,6 +10,7 @@
 
 # help with short description and script execution syntax
 help () {
+	echo
 	echo "script to search and display user details" 
 	echo
 	echo "$0 --help"
@@ -41,7 +42,7 @@ user-details () {
 	# 
 
 	echo
-	echo "User search: $1"
+	echo "User search : $1"
 	echo
 
 	# ifs - input field separators
@@ -51,8 +52,6 @@ user-details () {
 	# range of users ids
 	MIN_UID=$(grep "^UID_MIN" /etc/login.defs | tr -s "\t" | cut -f2)
         MAX_UID=$(grep "^UID_MAX" /etc/login.defs | tr -s "\t" | cut -f2)
-	#MIN_UID=0
-	#MAX_UID=999
 
         # loop for searching, validating e listing users
         for i in $(cat /etc/passwd | grep $1)
@@ -67,21 +66,20 @@ user-details () {
 			USEHOME=$(du -sh /home/$USERNAME | cut -f1)
 			LASTLOG=$(lastlog -u $USERNAME | sed '1d')
 
-			echo
 			echo "--------------------------------------------------------------------------"
 			echo
-			echo "user report: $USERNAME"
+			echo "user report : $USERNAME"
 			echo
-			echo "user id: $USERID"
-			echo "user directory: $USERHOME with $USEHOME"
-			echo "description: $USERDESC"
-                        echo
+			echo "user id : $USERID"
+			echo "user directory : $USERHOME with $USEHOME"
+			echo "description : $USERDESC"
 			echo
-
-			echo "last login: "
-			echo -e "user\t\tport\t\tip\t\tlast log"
+			echo "groups with $(groups $USERNAME)"
+			echo
+			echo
+			echo "last login : "
+			echo -e "user\t\t port\t  ip\t\t   last log"
 			echo "$LASTLOG"
-
 			echo
 			echo "--------------------------------------------------------------------------"
                		echo
@@ -104,7 +102,7 @@ case $1 in
 			help
 		else
 			user-details $1
-			logs "$(date): new user query"
+			logs "$(date): [$0] new user query"
 		fi
 		;;
 esac
